@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Tic tac toe">
+    <output-path>$PROJECT_DIR$/out/artifacts/Tic_tac_toe</output-path>
+    <root id="archive" name="XOGame.jar">
+      <element id="module-output" name="XOGame" />
+    </root>
+  </artifact>
+</component>
