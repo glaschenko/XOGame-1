@@ -23,8 +23,9 @@ public class GameWindow extends JFrame {
         settingsWindow = new SettingsWindow(this);
         gameMap = new GameMap();
 
-
+        //extract method
         JButton butStartGame = new JButton("Start New Game");
+        //todo should be opened as modal
         butStartGame.addActionListener(e -> settingsWindow.setVisible(true));
 
         JButton butExitGame = new JButton("Exit");

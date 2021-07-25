@@ -5,9 +5,9 @@ import java.awt.*;
 
 public class SettingsColorFrame extends JFrame {
 
+    //todo naming
     private static final int COLOR_WIDTH = 350;
     private static final int COLOR_HEIGHT = 300;
-
 
     SettingsColorFrame(SettingsWindow settingsWindow) {
         setSize(COLOR_WIDTH, COLOR_HEIGHT);
@@ -19,7 +19,7 @@ public class SettingsColorFrame extends JFrame {
 
         setLocation(PosX, PosY);
         setResizable(false);
-        setTitle("Field Color");
+        setTitle("Field Color"); //todo some names in En, some in Ru
 
 
         JButton butOk = new JButton("Ok");
@@ -29,7 +29,7 @@ public class SettingsColorFrame extends JFrame {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(2, 2));
 
-
+        //todo better colors, extract method
         JButton butWhite = new JButton();
         butWhite.setBackground(Color.WHITE);
         butWhite.addActionListener(e -> changeButtonColor(settingsWindow, butOk, Color.WHITE));

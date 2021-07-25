@@ -22,7 +22,7 @@ public class SettingsWindow extends JFrame {
     private final JButton butColor;
     private Color colorMap;
 
-
+    //todo extract to .properties?
     private final String FIELD_SIZE_PREFIX = "Размер поля: ";
     private final String WIN_LENGTH_PREFIX = "Условие победы: ";
 
@@ -30,13 +30,13 @@ public class SettingsWindow extends JFrame {
         this.gameWindow = gameWindow;
         setSize(WIN_WIDTH, WIN_HEIGHT);
 
-
         Rectangle gameWindowBounds = gameWindow.getBounds();
         int posX = (int) gameWindowBounds.getCenterX() - WIN_WIDTH / 2;
         int posY = (int) gameWindowBounds.getCenterY() - WIN_HEIGHT / 2;
 
         setLocation(posX, posY);
         setResizable(false);
+        //todo why partly in code partly in consts?
         setTitle("Enter Your Settings New Game");
 
         settingsColor = new SettingsColorFrame(this);
@@ -45,6 +45,7 @@ public class SettingsWindow extends JFrame {
 
 
         initSettingControls();
+        //todo naming convention
         fieldSizeAndWinControl();
 
         butColor = new JButton("Selecting Field Color");
@@ -53,6 +54,7 @@ public class SettingsWindow extends JFrame {
         add(butColor);
 
         JButton butStart = new JButton("Start Game");
+        //todo naming
         butStart.addActionListener(e -> gameModeControls());
 
 
@@ -64,7 +66,7 @@ public class SettingsWindow extends JFrame {
     private void initSettingControls() {
         add(new JLabel("Выберите режим игры"));
         humanVsHuman = new JRadioButton("2 PLAYERS");
-        humanVsAi = new JRadioButton("1 PLAYERS", true);
+        humanVsAi = new JRadioButton("1 PLAYER", true);
 
         ButtonGroup gameMode = new ButtonGroup();
         gameMode.add(humanVsHuman);
@@ -79,6 +81,7 @@ public class SettingsWindow extends JFrame {
         JLabel labelWinLength = new JLabel(WIN_LENGTH_PREFIX + MIN_WIN_LENGTH);
 
         sliderFieldSize = new JSlider(MIN_FIELD_SIZE, MAX_FIELD_SIZE, MIN_FIELD_SIZE);
+        //todo perhaps can move lower
         sliderFieldSize.addChangeListener(e -> {
             int currentValue = sliderFieldSize.getValue();
             labelFieldSize.setText(FIELD_SIZE_PREFIX + currentValue);
@@ -107,17 +110,17 @@ public class SettingsWindow extends JFrame {
     private void gameModeControls() {
 
         int gameMode;
+        //todo use : ? operator
         if (humanVsHuman.isSelected()) {
             gameMode = GameMap.GAME_MODE_HVH;
         } else if (humanVsAi.isSelected()) {
             gameMode = GameMap.GAME_MODE_HVA;
-        } else {
+        } else { //todo can never happen, you control it.
             throw new RuntimeException("Неизвестный тип игры");
         }
 
         int fieldSize = sliderFieldSize.getValue();
         int winLength = sliderWinLength.getValue();
-
 
         gameWindow.startNewGame(gameMode, fieldSize, fieldSize, winLength, colorMap);
         setVisible(false);

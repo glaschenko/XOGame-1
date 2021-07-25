@@ -12,24 +12,26 @@ import java.util.Random;
 public class GameMap extends JPanel {
 
     private static final int EMPTY_DOT = 0;
+    //todo enum?
     private static final int HUMAN_DOT = 1;
+    //todo player2?
     private static final int AI_DOT = 2;
 
+    //todo enum?
     private static final int STATE_DRAW = 0;
     private static final int VERTICAL_WIN = 1;
     private static final int HORIZONTAL_WIN = 2;
     private static final int DIAGONAL_WIN = 3;
     private static final int REVERSE_DIAGONAL_WIN = 4;
-    private int stateWin;
+    private int stateWin; //todo initialize in start
 
     private int currentStateGameOver;
-    private boolean isGameOver;
 
     public final Random RANDOM = new Random();
-
+    //todo not the most clear names, make enum
     public static final int GAME_MODE_HVH = 0;
     public static final int GAME_MODE_HVA = 1;
-    public static int count = 0;
+    public static int turnsCount = 0; //todo naming??
 
     private int gameMode;
     private int fieldSizeX;
@@ -38,9 +40,10 @@ public class GameMap extends JPanel {
     private int[][] field;
     private int cellWidth;
     private int cellHeight;
-    private int dotI;
-    private int dotJ;
-
+    private int dotI; //todo naming??
+    private int dotJ; //todo naming??
+    //todo enum
+    private boolean isGameOver;
     private boolean isGameStarted;
 
     GameMap() {
@@ -60,8 +63,8 @@ public class GameMap extends JPanel {
         this.fieldSizeX = fieldSizeX;
         this.fieldSizeY = fieldSizeY;
         this.winLength = winLength;
-        setBackground(colorMap);
-        count = 0;
+        setBackground(colorMap); //todo naming??
+        turnsCount = 0; //todo why is it static??
         field = new int[fieldSizeX][fieldSizeY];
         isGameOver = false;
         isGameStarted = true;
@@ -70,29 +73,45 @@ public class GameMap extends JPanel {
 
     private void update(MouseEvent e) {
         if (!isGameStarted) return;
-        if (isGameOver) return;
+        if (isGameOver) return; //todo move to upper if
         int cellX = e.getX() / cellWidth;
         int cellY = e.getY() / cellHeight;
-        System.out.println("X: " + cellX + ", Y:" + cellY);
+        System.out.println("X: " + cellX + ", Y:" + cellY); //todo use logger
         if (isValidCell(cellX, cellY) || !isEmptyCell(cellX, cellY)) {
             return;
         }
-        if (gameMode == GAME_MODE_HVH && count % 2 == 0) {
-            player(cellY, cellX, AI_DOT);
-        } else {
-            player(cellY, cellX, HUMAN_DOT);
+        //todo refactor ifs and use ternary operator (see original version commented out)
+        if (gameMode == GAME_MODE_HVH) {
+            player(cellY, cellX, turnsCount % 2 == 0 ? AI_DOT : HUMAN_DOT);
         }
-        if (gameMode == GAME_MODE_HVA && !isGameOver) {
+        else {
             aiTurn();
-            repaint();
+            repaint(); //todo just have one repaint at the end of the method.
             if (checkWin(AI_DOT)) {
                 setGameOver(stateWin);
-                return;
+                return; //todo replace with "else" below
             }
             if (isFullMap()) {
                 setGameOver(STATE_DRAW);
             }
         }
+
+//        if (gameMode == GAME_MODE_HVH && turnsCount % 2 == 0) {
+//            player(cellY, cellX, AI_DOT);
+//        } else {
+//            player(cellY, cellX, HUMAN_DOT);
+//        }
+//        if (gameMode == GAME_MODE_HVA && !isGameOver) {
+//            aiTurn();
+//            repaint();
+//            if (checkWin(AI_DOT)) {
+//                setGameOver(stateWin);
+//                return;
+//            }
+//            if (isFullMap()) {
+//                setGameOver(STATE_DRAW);
+//            }
+//        }
     }
 
     private void setGameOver(int gameOverState) {
@@ -100,7 +119,7 @@ public class GameMap extends JPanel {
         isGameOver = true;
         repaint();
     }
-
+    //todo better name
     private void player(int cellY, int cellX, int characterSymbol) {
         field[cellY][cellX] = characterSymbol;
         if (checkWin(characterSymbol)) {
@@ -111,15 +130,16 @@ public class GameMap extends JPanel {
             setGameOver(STATE_DRAW);
             return;
         }
-        repaint();
+        repaint(); //todo I guess we will always need repaint in update().
     }
 
     private void render(Graphics g) throws IOException {
         if (!isGameStarted) return;
         int width = getWidth();
         int height = getHeight();
-        cellWidth = width / fieldSizeX;
+        cellWidth = width / fieldSizeX; //todo should be init in constructor if size is static
         cellHeight = height / fieldSizeY;
+        //todo extract method
         g.setColor(Color.BLACK);
         for (int i = 1; i < fieldSizeY; i++) {
             int y = i * cellHeight;
@@ -129,11 +149,13 @@ public class GameMap extends JPanel {
             int x = i * cellWidth;
             g.drawLine(x, 0, x, height);
         }
+        //todo move to constants.
         Image cross = ImageIO.read(Objects.requireNonNull(GameMap.class.getResourceAsStream("resources//cross.png")));
         Image zero = ImageIO.read(Objects.requireNonNull(GameMap.class.getResourceAsStream("resources//zero.png")));
+        //todo extract method
         for (int y = 0; y < fieldSizeY; y++) {
             for (int x = 0; x < fieldSizeX; x++) {
-                if (isEmptyCell(x, y)) {
+                if (isEmptyCell(x, y)) { //todo enum+switch
                     continue;
                 }
                 if (field[y][x] == HUMAN_DOT) {
@@ -145,7 +167,7 @@ public class GameMap extends JPanel {
                 }
             }
         }
-        count++;
+        turnsCount++; //todo VERY IMPLICIT AND FRAGILE LOGIC!!!! BE EXPLICIT!
         if (isGameOver) {
             showGameOverState(g);
         }
@@ -163,7 +185,7 @@ public class GameMap extends JPanel {
             }
             case DIAGONAL_WIN -> {
                 Image DIAGONAL = ImageIO.read(Objects.requireNonNull(GameMap.class.getResourceAsStream("resources//DIAGONAL.png")));
-                for (int s = 0; s < winLength; s++)
+                for (int s = 0; s < winLength; s++) //todo better use brackets.
                     g.drawImage(DIAGONAL, (dotI + s) * cellWidth - 15, (dotJ + s) * cellHeight - 15, cellWidth + 15, cellHeight + 15, null);
             }
             case REVERSE_DIAGONAL_WIN -> {
@@ -183,6 +205,7 @@ public class GameMap extends JPanel {
     }
 
     private void aiTurn() {
+        //todo methods can be merged in one
         if (turnAIWinCell()) {
             return;
         }
@@ -191,7 +214,7 @@ public class GameMap extends JPanel {
         }
         int x;
         int y;
-        do {
+        do { //todo replace with a more efficient algo
             x = RANDOM.nextInt(fieldSizeX);
             y = RANDOM.nextInt(fieldSizeY);
         } while (!isEmptyCell(x, y));
@@ -230,11 +253,12 @@ public class GameMap extends JPanel {
     }
 
     private boolean checkWin(int characterSymbol) {
+        //todo better use hor/ver instead of x/y
         for (int i = 0; i < fieldSizeX; i++) {
             for (int j = 0; j < fieldSizeY; j++) {
                 if (checkLine(i, j, 1, 0, winLength, characterSymbol)) {
                     stateWin = HORIZONTAL_WIN;
-                    dotI = i;
+                    dotI = i; //todo get rid of copy paste
                     dotJ = j;
                     return true;
                 }
@@ -261,6 +285,7 @@ public class GameMap extends JPanel {
         return false;
     }
 
+    //todo better parameters and method name
     private boolean checkLine(int x, int y, int vx, int vy, int len, int characterSymbol) {
         final int farX = x + (len - 1) * vx;
         final int farY = y + (len - 1) * vy;
@@ -274,7 +299,7 @@ public class GameMap extends JPanel {
         }
         return true;
     }
-
+    //todo can be simply replaced with turns count.
     private boolean isFullMap() {
         for (int i = 0; i < fieldSizeX; i++) {
             for (int j = 0; j < fieldSizeY; j++) {
@@ -299,7 +324,7 @@ public class GameMap extends JPanel {
         super.paintComponent(g);
         try {
             render(g);
-        } catch (IOException e) {
+        } catch (IOException e) { //todo why are you catching this one?
             e.printStackTrace();
         }
     }
