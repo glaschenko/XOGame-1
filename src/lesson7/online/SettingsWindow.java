@@ -2,6 +2,9 @@ package lesson7.online;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 
 public class SettingsWindow extends JDialog {
     private static final int WIN_WIDTH = 350;
@@ -23,7 +26,6 @@ public class SettingsWindow extends JDialog {
     private Color colorMap;
 
     //todo extract to .properties?
-    private final String FIELD_SIZE_PREFIX = "Размер поля: ";
     private final String WIN_LENGTH_PREFIX = "Условие победы: ";
 
     SettingsWindow(GameWindow gameWindow) {
@@ -77,14 +79,15 @@ public class SettingsWindow extends JDialog {
     }
 
     private void fieldSizeAndWinControl() {
-        JLabel labelFieldSize = new JLabel(FIELD_SIZE_PREFIX + MIN_FIELD_SIZE);
+        String fieldSizePrefix = GameWindow.messages.getProperty("fieldSizePrefix");
+        JLabel labelFieldSize = new JLabel(fieldSizePrefix + " " + MIN_FIELD_SIZE);
         JLabel labelWinLength = new JLabel(WIN_LENGTH_PREFIX + MIN_WIN_LENGTH);
 
         sliderFieldSize = new JSlider(MIN_FIELD_SIZE, MAX_FIELD_SIZE, MIN_FIELD_SIZE);
         //todo perhaps can move lower
         sliderFieldSize.addChangeListener(e -> {
             int currentValue = sliderFieldSize.getValue();
-            labelFieldSize.setText(FIELD_SIZE_PREFIX + currentValue);
+            labelFieldSize.setText(fieldSizePrefix + " " + currentValue);
             sliderWinLength.setMaximum(currentValue);
         });
 
