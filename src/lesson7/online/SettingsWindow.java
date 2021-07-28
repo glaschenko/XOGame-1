@@ -3,7 +3,7 @@ package lesson7.online;
 import javax.swing.*;
 import java.awt.*;
 
-public class SettingsWindow extends JFrame {
+public class SettingsWindow extends JDialog {
     private static final int WIN_WIDTH = 350;
     private static final int WIN_HEIGHT = 300;
 
@@ -27,6 +27,7 @@ public class SettingsWindow extends JFrame {
     private final String WIN_LENGTH_PREFIX = "Условие победы: ";
 
     SettingsWindow(GameWindow gameWindow) {
+        super(gameWindow, "Enter Your Settings New Game", true);
         this.gameWindow = gameWindow;
         setSize(WIN_WIDTH, WIN_HEIGHT);
 
@@ -37,7 +38,6 @@ public class SettingsWindow extends JFrame {
         setLocation(posX, posY);
         setResizable(false);
         //todo why partly in code partly in consts?
-        setTitle("Enter Your Settings New Game");
 
         settingsColor = new SettingsColorFrame(this);
 
