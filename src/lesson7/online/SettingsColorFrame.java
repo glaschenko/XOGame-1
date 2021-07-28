@@ -32,19 +32,19 @@ public class SettingsColorFrame extends JFrame {
         //todo better colors, extract method
         JButton butWhite = new JButton();
         butWhite.setBackground(Color.WHITE);
-        butWhite.addActionListener(e -> changeButtonColor(settingsWindow, butOk, Color.WHITE));
+        butWhite.addActionListener(e -> handleColorButtonClick(settingsWindow, butOk, Color.WHITE));
 
         JButton butBlue = new JButton();
         butBlue.setBackground(Color.BLUE);
-        butBlue.addActionListener(e -> changeButtonColor(settingsWindow, butOk, Color.BLUE));
+        butBlue.addActionListener(e -> handleColorButtonClick(settingsWindow, butOk, Color.BLUE));
 
         JButton butGreen = new JButton();
         butGreen.setBackground(Color.GREEN);
-        butGreen.addActionListener(e -> changeButtonColor(settingsWindow, butOk, Color.GREEN));
+        butGreen.addActionListener(e -> handleColorButtonClick(settingsWindow, butOk, Color.GREEN));
 
         JButton butRed = new JButton();
         butRed.setBackground(Color.RED);
-        butRed.addActionListener(e -> changeButtonColor(settingsWindow, butOk, Color.RED));
+        butRed.addActionListener(e -> handleColorButtonClick(settingsWindow, butOk, Color.RED));
 
         buttonPanel.add(butWhite);
         buttonPanel.add(butBlue);
@@ -56,8 +56,8 @@ public class SettingsColorFrame extends JFrame {
 
     }
 
-    private void changeButtonColor(SettingsWindow settingsWindow, Component butOk, Color colorId) {
-        settingsWindow.colorButton(colorId);
+    private void handleColorButtonClick(SettingsWindow settingsWindow, Component butOk, Color colorId) {
+        settingsWindow.setSelectedColor(colorId);
         butOk.setBackground(colorId);
     }
 
