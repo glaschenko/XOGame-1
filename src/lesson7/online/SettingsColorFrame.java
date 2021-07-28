@@ -3,63 +3,48 @@ package lesson7.online;
 import javax.swing.*;
 import java.awt.*;
 
-public class SettingsColorFrame extends JFrame {
-
-    //todo naming
-    private static final int COLOR_WIDTH = 350;
-    private static final int COLOR_HEIGHT = 300;
+public class SettingsColorFrame extends JDialog {
+    private static final int FRAME_WIDTH = 350;
+    private static final int FRAME_HEIGHT = 300;
+    public static final Color colorOption1 = new Color(180, 198, 239);
+    private final JButton butOk;
+    private final SettingsWindow settingsWindow;
 
     SettingsColorFrame(SettingsWindow settingsWindow) {
-        setSize(COLOR_WIDTH, COLOR_HEIGHT);
-
-
+        super(settingsWindow, "Field Color", true);
+        this.settingsWindow = settingsWindow;
+        setSize(FRAME_WIDTH, FRAME_HEIGHT);
         Rectangle settingsWindowBounds = settingsWindow.getBounds();
         int PosX = (int) settingsWindowBounds.getX();
         int PosY = (int) settingsWindowBounds.getY();
 
         setLocation(PosX, PosY);
         setResizable(false);
-        setTitle("Field Color"); //todo some names in En, some in Ru
 
-
-        JButton butOk = new JButton("Ok");
+        butOk = new JButton("Ok");
         butOk.addActionListener(e -> setVisible(false));
         add(butOk, BorderLayout.SOUTH);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(2, 2));
 
-        //todo better colors, extract method
-        JButton butWhite = new JButton();
-        butWhite.setBackground(Color.WHITE);
-        butWhite.addActionListener(e -> handleColorButtonClick(settingsWindow, butOk, Color.WHITE));
-
-        JButton butBlue = new JButton();
-        butBlue.setBackground(Color.BLUE);
-        butBlue.addActionListener(e -> handleColorButtonClick(settingsWindow, butOk, Color.BLUE));
-
-        JButton butGreen = new JButton();
-        butGreen.setBackground(Color.GREEN);
-        butGreen.addActionListener(e -> handleColorButtonClick(settingsWindow, butOk, Color.GREEN));
-
-        JButton butRed = new JButton();
-        butRed.setBackground(Color.RED);
-        butRed.addActionListener(e -> handleColorButtonClick(settingsWindow, butOk, Color.RED));
-
-        buttonPanel.add(butWhite);
-        buttonPanel.add(butBlue);
-        buttonPanel.add(butGreen);
-        buttonPanel.add(butRed);
-
+        //todo better colors
+        initColorButton(buttonPanel, Color.WHITE);
+        initColorButton(buttonPanel, colorOption1);
+        initColorButton(buttonPanel, Color.GREEN);
+        initColorButton(buttonPanel, Color.RED);
         add(buttonPanel);
-
-
     }
 
-    private void handleColorButtonClick(SettingsWindow settingsWindow, Component butOk, Color colorId) {
+    private void initColorButton(JPanel buttonPanel, Color color){
+        JButton button = new JButton();
+        button.setBackground(color);
+        button.addActionListener(e -> handleColorButtonClick(color));
+        buttonPanel.add(button);
+    }
+
+    private void handleColorButtonClick(Color colorId) {
         settingsWindow.setSelectedColor(colorId);
         butOk.setBackground(colorId);
     }
-
-
 }
