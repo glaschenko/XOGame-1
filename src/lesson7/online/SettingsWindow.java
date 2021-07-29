@@ -2,6 +2,9 @@ package lesson7.online;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 
 public class SettingsWindow extends JDialog {
     private static final int WIN_WIDTH = 350;
@@ -10,6 +13,8 @@ public class SettingsWindow extends JDialog {
     private static final int MIN_FIELD_SIZE = 3;
     private static final int MAX_FIELD_SIZE = 6;
     private static final int MIN_WIN_LENGTH = 3;
+
+
 
 
     private final GameWindow gameWindow;
@@ -21,10 +26,6 @@ public class SettingsWindow extends JDialog {
     private JSlider sliderFieldSize;
     private final JButton butColor;
     private Color colorMap;
-
-    //todo extract to .properties?
-    private final String FIELD_SIZE_PREFIX = "Размер поля: ";
-    private final String WIN_LENGTH_PREFIX = "Условие победы: ";
 
     SettingsWindow(GameWindow gameWindow) {
         super(gameWindow, "Enter Your Settings New Game", true);
@@ -50,17 +51,12 @@ public class SettingsWindow extends JDialog {
 
         butColor = new JButton("Selecting Field Color");
         butColor.addActionListener(e -> settingsColor.setVisible(true));
-
         add(butColor);
 
         JButton butStart = new JButton("Start Game");
         //todo naming
         butStart.addActionListener(e -> gameModeControls());
-
-
         add(butStart);
-
-
     }
 
     private void initSettingControls() {
@@ -77,19 +73,21 @@ public class SettingsWindow extends JDialog {
     }
 
     private void fieldSizeAndWinControl() {
-        JLabel labelFieldSize = new JLabel(FIELD_SIZE_PREFIX + MIN_FIELD_SIZE);
-        JLabel labelWinLength = new JLabel(WIN_LENGTH_PREFIX + MIN_WIN_LENGTH);
+        String fieldSizePrefix = new GameWindow().messages.getProperty("fieldSizePrefix");
+        String winLengthPrefix = new GameWindow().messages.getProperty("winLengthPrefix");
+        JLabel labelFieldSize = new JLabel(fieldSizePrefix + " "+ MIN_FIELD_SIZE);
+        JLabel labelWinLength = new JLabel(winLengthPrefix + MIN_WIN_LENGTH);
 
         sliderFieldSize = new JSlider(MIN_FIELD_SIZE, MAX_FIELD_SIZE, MIN_FIELD_SIZE);
         //todo perhaps can move lower
         sliderFieldSize.addChangeListener(e -> {
             int currentValue = sliderFieldSize.getValue();
-            labelFieldSize.setText(FIELD_SIZE_PREFIX + currentValue);
+            labelFieldSize.setText(fieldSizePrefix + currentValue);
             sliderWinLength.setMaximum(currentValue);
         });
 
         sliderWinLength = new JSlider(MIN_WIN_LENGTH, MIN_FIELD_SIZE, MIN_FIELD_SIZE);
-        sliderWinLength.addChangeListener(e -> labelWinLength.setText(WIN_LENGTH_PREFIX + sliderWinLength.getValue()));
+        sliderWinLength.addChangeListener(e -> labelWinLength.setText(winLengthPrefix + sliderWinLength.getValue()));
 
 
         add(new JLabel("Выберите размер поля"));
