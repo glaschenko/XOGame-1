@@ -57,7 +57,7 @@ public class SettingsColorFrame extends JFrame {
     }
 
     private void changeButtonColor(SettingsWindow settingsWindow, Component butOk, Color colorId) {
-        settingsWindow.colorButton(colorId);
+        settingsWindow.setSelectedColor(colorId);
         butOk.setBackground(colorId);
     }
 
