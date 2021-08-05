@@ -3,63 +3,51 @@ package lesson7.online;
 import javax.swing.*;
 import java.awt.*;
 
-public class SettingsColorFrame extends JFrame {
+public class SettingsColorFrame extends JDialog {
 
-    //todo naming
-    private static final int COLOR_WIDTH = 350;
-    private static final int COLOR_HEIGHT = 300;
+    private static final int FRAME_WIDTH = 350;
+    private static final int FRAME_HEIGHT = 300;
+    private final JButton butOk;
+    private final SettingsWindow settingsWindow;
+    private static final Color colorOptionW = new Color(255, 255, 255);
+    private static final Color colorOptionB = new Color(81, 81, 255);
+    private static final Color colorOptionG = new Color(0, 145, 72);
+    private static final Color colorOptionR = new Color(255, 62, 62);
 
     SettingsColorFrame(SettingsWindow settingsWindow) {
-        setSize(COLOR_WIDTH, COLOR_HEIGHT);
-
+        super(settingsWindow,"Field Color", true);
+        this.settingsWindow = settingsWindow;
+        setSize(FRAME_WIDTH, FRAME_HEIGHT);
 
         Rectangle settingsWindowBounds = settingsWindow.getBounds();
         int PosX = (int) settingsWindowBounds.getX();
         int PosY = (int) settingsWindowBounds.getY();
-
         setLocation(PosX, PosY);
         setResizable(false);
-        setTitle("Field Color"); //todo some names in En, some in Ru
 
-
-        JButton butOk = new JButton("Ok");
+        String Ok = GameWindow.messages.getProperty("Ok");
+        butOk = new JButton(Ok);
         butOk.addActionListener(e -> setVisible(false));
         add(butOk, BorderLayout.SOUTH);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(2, 2));
-
-        //todo better colors, extract method
-        JButton butWhite = new JButton();
-        butWhite.setBackground(Color.WHITE);
-        butWhite.addActionListener(e -> changeButtonColor(settingsWindow, butOk, Color.WHITE));
-
-        JButton butBlue = new JButton();
-        butBlue.setBackground(Color.BLUE);
-        butBlue.addActionListener(e -> changeButtonColor(settingsWindow, butOk, Color.BLUE));
-
-        JButton butGreen = new JButton();
-        butGreen.setBackground(Color.GREEN);
-        butGreen.addActionListener(e -> changeButtonColor(settingsWindow, butOk, Color.GREEN));
-
-        JButton butRed = new JButton();
-        butRed.setBackground(Color.RED);
-        butRed.addActionListener(e -> changeButtonColor(settingsWindow, butOk, Color.RED));
-
-        buttonPanel.add(butWhite);
-        buttonPanel.add(butBlue);
-        buttonPanel.add(butGreen);
-        buttonPanel.add(butRed);
-
+        initColorButton(buttonPanel, colorOptionW);
+        initColorButton(buttonPanel, colorOptionB);
+        initColorButton(buttonPanel, colorOptionG);
+        initColorButton(buttonPanel, colorOptionR);
         add(buttonPanel);
-
-
     }
 
-    private void changeButtonColor(SettingsWindow settingsWindow, Component butOk, Color colorId) {
+    private void initColorButton(JPanel buttonPanel, Color color){
+        JButton button = new JButton();
+        button.setBackground(color);
+        button.addActionListener(e -> changeButtonColor(color));
+        buttonPanel.add(button);
+    }
+
+    private void changeButtonColor(Color colorId) {
         settingsWindow.setSelectedColor(colorId);
         butOk.setBackground(colorId);
     }
-
-
 }

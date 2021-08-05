@@ -64,18 +64,19 @@ public class SettingsWindow extends JDialog {
     private void fieldSizeAndWinControl() {
         String fieldSizePrefix = GameWindow.messages.getProperty("fieldSizePrefix");
         String winLengthPrefix = GameWindow.messages.getProperty("winLengthPrefix");
-        JLabel labelFieldSize = new JLabel(fieldSizePrefix + " "+ MIN_FIELD_SIZE);
-        JLabel labelWinLength = new JLabel(winLengthPrefix + MIN_WIN_LENGTH);
+        JLabel labelFieldSize = new JLabel(fieldSizePrefix + " " + MIN_FIELD_SIZE);
+        JLabel labelWinLength = new JLabel(winLengthPrefix + " " + MIN_WIN_LENGTH);
 
         sliderFieldSize = new JSlider(MIN_FIELD_SIZE, MAX_FIELD_SIZE, MIN_FIELD_SIZE);
         sliderWinLength = new JSlider(MIN_WIN_LENGTH, MIN_FIELD_SIZE, MIN_FIELD_SIZE);
 
         sliderFieldSize.addChangeListener(e -> {
             int currentValue = sliderFieldSize.getValue();
-            labelFieldSize.setText(fieldSizePrefix + currentValue);
+            labelFieldSize.setText(fieldSizePrefix + " " + currentValue);
             sliderWinLength.setMaximum(currentValue);
         });
-        sliderWinLength.addChangeListener(e -> labelWinLength.setText(winLengthPrefix + sliderWinLength.getValue()));
+
+        sliderWinLength.addChangeListener(e -> labelWinLength.setText(winLengthPrefix + " " + sliderWinLength.getValue()));
         String SelectFieldSize = GameWindow.messages.getProperty("SelectFieldSize");
         String SelectVictoryConditions = GameWindow.messages.getProperty("SelectVictoryConditions");
         add(new JLabel(SelectFieldSize));

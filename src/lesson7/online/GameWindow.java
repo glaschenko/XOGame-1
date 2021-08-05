@@ -31,23 +31,27 @@ public class GameWindow extends JFrame {
         gameMap = new GameMap();
 
         //extract method
-        JButton butStartGame = new JButton("Start New Game");
-        //todo should be opened as modal
+        initializeButtonsPanel();
+        add(gameMap);
+
+        setVisible(true);
+    }
+
+    private void initializeButtonsPanel() {
+        String StartNewGame = GameWindow.messages.getProperty("StartNewGame");
+        String Exit = GameWindow.messages.getProperty("Exit");
+        JButton butStartGame = new JButton(StartNewGame);
         butStartGame.addActionListener(e -> settingsWindow.setVisible(true));
 
-        JButton butExitGame = new JButton("Exit");
+        JButton butExitGame = new JButton(Exit);
         butExitGame.addActionListener(e -> System.exit(0));
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(1, 2));
 
-
         buttonPanel.add(butStartGame);
         buttonPanel.add(butExitGame);
         add(buttonPanel, BorderLayout.SOUTH);
-        add(gameMap);
-
-        setVisible(true);
     }
 
     private void initMessages() {
@@ -63,6 +67,4 @@ public class GameWindow extends JFrame {
     void startNewGame(int gameMode, int fieldSizeX, int fieldSizeY, int winLength, Color colorMap) {
         gameMap.start(gameMode, fieldSizeX, fieldSizeY, winLength, colorMap);
     }
-
-
 }
