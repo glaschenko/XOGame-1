@@ -91,7 +91,7 @@ public class SettingsWindow extends JDialog {
     }
 
     private void handleStartButtonClick() {
-        int gameMode = humanVsHuman.isSelected() ? GameMap.GAME_MODE_HVH : GameMap.GAME_MODE_HVA;
+        GameMode gameMode = humanVsHuman.isSelected() ? GameMode.HUMAN_VS_HUMAN : GameMode.HUMAN_VS_AI;
         int fieldSize = sliderFieldSize.getValue();
         int winLength = sliderWinLength.getValue();
 

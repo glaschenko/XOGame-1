@@ -9,42 +9,33 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Random;
 
+import static lesson7.online.GameState.FINISHED;
+
 public class GameMap extends JPanel {
-
-    private static final int EMPTY_DOT = 0;
-    //todo enum?
-    private static final int HUMAN_DOT = 1;
-    //todo player2?
-    private static final int AI_DOT = 2;
-
-    //todo enum?
-    private static final int STATE_DRAW = 0;
-    private static final int VERTICAL_WIN = 1;
-    private static final int HORIZONTAL_WIN = 2;
-    private static final int DIAGONAL_WIN = 3;
-    private static final int REVERSE_DIAGONAL_WIN = 4;
-    private int stateWin; //todo initialize in start
-
-    private int currentStateGameOver;
-
+    public int turnsCount = 0;
     public final Random RANDOM = new Random();
-    //todo not the most clear names, make enum
-    public static final int GAME_MODE_HVH = 0;
-    public static final int GAME_MODE_HVA = 1;
-    public static int turnsCount = 0; //todo naming??
 
-    private int gameMode;
+    private WinType currentStateGameOver;
+
+    private GameMode gameMode;
     private int fieldSizeX;
     private int fieldSizeY;
     private int winLength;
-    private int[][] field;
+    private FieldStatus[][] field;
     private int cellWidth;
     private int cellHeight;
-    private int dotI; //todo naming??
-    private int dotJ; //todo naming??
-    //todo enum
-    private boolean isGameOver;
-    private boolean isGameStarted;
+    private Coordinate winLineStart;
+    private GameState gameState;
+
+    static class Coordinate{
+        int x;
+        int y;
+
+        public Coordinate(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
 
     GameMap() {
         setBackground(Color.WHITE);
@@ -55,46 +46,46 @@ public class GameMap extends JPanel {
                 update(e);
             }
         });
-        isGameStarted = false;
+        gameState = GameState.NOT_STARTED;
     }
 
-    void start(int gameMode, int fieldSizeX, int fieldSizeY, int winLength, Color colorMap) {
+    void start(GameMode gameMode, int fieldSizeX, int fieldSizeY, int winLength, Color colorMap) {
         this.gameMode = gameMode;
         this.fieldSizeX = fieldSizeX;
         this.fieldSizeY = fieldSizeY;
         this.winLength = winLength;
         setBackground(colorMap); //todo naming??
-        turnsCount = 0; //todo why is it static??
-        field = new int[fieldSizeX][fieldSizeY];
-        isGameOver = false;
-        isGameStarted = true;
+        turnsCount = 0;
+        field = new FieldStatus[fieldSizeX][fieldSizeY];
+        gameState = GameState.STARTED;
         repaint();
     }
 
     private void update(MouseEvent e) {
-        if (!isGameStarted) return;
-        if (isGameOver) return; //todo move to upper if
+        if (gameState != GameState.STARTED) return;
         int cellX = e.getX() / cellWidth;
         int cellY = e.getY() / cellHeight;
         System.out.println("X: " + cellX + ", Y:" + cellY); //todo use logger
-        if (isValidCell(cellX, cellY) || !isEmptyCell(cellX, cellY)) {
+        if (isInvalidCell(cellX, cellY) || !isEmptyCell(cellX, cellY)) {
             return;
         }
         //todo refactor ifs and use ternary operator (see original version commented out)
-        if (gameMode == GAME_MODE_HVH) {
-            player(cellY, cellX, turnsCount % 2 == 0 ? AI_DOT : HUMAN_DOT);
+        boolean evenTurn = turnsCount % 2 == 0;
+        if ( (gameMode == GameMode.HUMAN_VS_HUMAN) || evenTurn) {
+            player(cellY, cellX, evenTurn ? FieldStatus.CROSS : FieldStatus.ZERO);
         }
-        else {
+        if(gameMode == GameMode.HUMAN_VS_AI){
             aiTurn();
-            repaint(); //todo just have one repaint at the end of the method.
-            if (checkWin(AI_DOT)) {
-                setGameOver(stateWin);
+            WinType winType = checkWin(FieldStatus.ZERO);
+            if (winType != null) {
+                setGameOver(winType);
                 return; //todo replace with "else" below
             }
             if (isFullMap()) {
-                setGameOver(STATE_DRAW);
+                setGameOver(WinType.DRAW);
             }
         }
+        repaint();
 
 //        if (gameMode == GAME_MODE_HVH && turnsCount % 2 == 0) {
 //            player(cellY, cellX, AI_DOT);
@@ -114,27 +105,29 @@ public class GameMap extends JPanel {
 //        }
     }
 
-    private void setGameOver(int gameOverState) {
+    private void setGameOver(WinType gameOverState) {
         currentStateGameOver = gameOverState;
-        isGameOver = true;
+        gameState = FINISHED;
         repaint();
     }
     //todo better name
-    private void player(int cellY, int cellX, int characterSymbol) {
-        field[cellY][cellX] = characterSymbol;
-        if (checkWin(characterSymbol)) {
-            setGameOver(stateWin);
+    private void player(int cellY, int cellX, FieldStatus fieldStatus) {
+        turnsCount++;
+        field[cellY][cellX] = fieldStatus;
+        WinType winType = checkWin(fieldStatus);
+        if (winType != null) {
+            setGameOver(winType);
             return;
         }
         if (isFullMap()) {
-            setGameOver(STATE_DRAW);
+            setGameOver(WinType.DRAW);
             return;
         }
         repaint(); //todo I guess we will always need repaint in update().
     }
 
     private void render(Graphics g) throws IOException {
-        if (!isGameStarted) return;
+        if (gameState != GameState.STARTED) return;
         int width = getWidth();
         int height = getHeight();
         cellWidth = width / fieldSizeX; //todo should be init in constructor if size is static
@@ -158,42 +151,43 @@ public class GameMap extends JPanel {
                 if (isEmptyCell(x, y)) { //todo enum+switch
                     continue;
                 }
-                if (field[y][x] == HUMAN_DOT) {
+                if (field[y][x] == FieldStatus.CROSS) {
                     g.drawImage(cross, x * cellWidth + 10, y * cellHeight + 10, cellWidth - 20, cellHeight - 20, null);
-                } else if (field[y][x] == AI_DOT) {
+                } else if (field[y][x] == FieldStatus.ZERO) {
                     g.drawImage(zero, x * cellWidth + 10, y * cellHeight + 10, cellWidth - 20, cellHeight - 20, null);
                 } else {
                     throw new RuntimeException("Ошибка при отрисовке X: " + x + " Y: " + y);
                 }
             }
         }
-        turnsCount++; //todo VERY IMPLICIT AND FRAGILE LOGIC!!!! BE EXPLICIT!
-        if (isGameOver) {
+        if (gameState == GameState.FINISHED) {
             showGameOverState(g);
         }
     }
 
     private void showGameOverState(Graphics g) throws IOException {
+        int startX = winLineStart.x;
+        int startY = winLineStart.y;
         switch (currentStateGameOver) {
-            case HORIZONTAL_WIN -> {
+            case HORIZONTAL -> {
                 Image HORIZONTAL = ImageIO.read(Objects.requireNonNull(GameMap.class.getResourceAsStream("resources//HORIZONTAL.png")));
-                g.drawImage(HORIZONTAL, dotI * cellWidth - 30, dotJ * cellHeight + cellHeight / 2 - cellHeight / 8, cellWidth * winLength + 60, cellHeight / 4, null);
+                g.drawImage(HORIZONTAL, startX * cellWidth - 30, startY * cellHeight + cellHeight / 2 - cellHeight / 8, cellWidth * winLength + 60, cellHeight / 4, null);
             }
-            case VERTICAL_WIN -> {
+            case VERTICAL -> {
                 Image VERTICAL = ImageIO.read(Objects.requireNonNull(GameMap.class.getResourceAsStream("resources//VERTICAL.png")));
-                g.drawImage(VERTICAL, dotI * cellWidth + cellWidth / 2 - cellWidth / 8, dotJ * cellHeight - 30, cellWidth / 4, cellHeight * winLength + 60, null);
+                g.drawImage(VERTICAL, startX * cellWidth + cellWidth / 2 - cellWidth / 8, startY * cellHeight - 30, cellWidth / 4, cellHeight * winLength + 60, null);
             }
-            case DIAGONAL_WIN -> {
+            case DIAGONAL -> {
                 Image DIAGONAL = ImageIO.read(Objects.requireNonNull(GameMap.class.getResourceAsStream("resources//DIAGONAL.png")));
                 for (int s = 0; s < winLength; s++) //todo better use brackets.
-                    g.drawImage(DIAGONAL, (dotI + s) * cellWidth - 15, (dotJ + s) * cellHeight - 15, cellWidth + 15, cellHeight + 15, null);
+                    g.drawImage(DIAGONAL, (startX + s) * cellWidth - 15, (startY + s) * cellHeight - 15, cellWidth + 15, cellHeight + 15, null);
             }
-            case REVERSE_DIAGONAL_WIN -> {
+            case REVERSE_DIAGONAL -> {
                 Image REVERSE_DIAGONAL = ImageIO.read(Objects.requireNonNull(GameMap.class.getResourceAsStream("resources//REVERSE_DIAGONAL.png")));
                 for (int s = 0; s < winLength; s++)
-                    g.drawImage(REVERSE_DIAGONAL, (dotI + s) * cellWidth - 15, (dotJ - s) * cellHeight - 15, cellWidth + 15, cellHeight + 15, null);
+                    g.drawImage(REVERSE_DIAGONAL, (startX + s) * cellWidth - 15, (startY - s) * cellHeight - 15, cellWidth + 15, cellHeight + 15, null);
             }
-            case STATE_DRAW -> {
+            case DRAW -> {
                 g.setColor(Color.WHITE);
                 g.fillRect(120, 170, 250, 100);
                 g.setColor(Color.BLACK);
@@ -206,6 +200,7 @@ public class GameMap extends JPanel {
 
     private void aiTurn() {
         //todo methods can be merged in one
+        turnsCount++;
         if (turnAIWinCell()) {
             return;
         }
@@ -218,18 +213,18 @@ public class GameMap extends JPanel {
             x = RANDOM.nextInt(fieldSizeX);
             y = RANDOM.nextInt(fieldSizeY);
         } while (!isEmptyCell(x, y));
-        field[y][x] = AI_DOT;
+        field[y][x] = FieldStatus.ZERO;
     }
 
     private boolean turnAIWinCell() {
         for (int i = 0; i < fieldSizeY; i++) {
             for (int j = 0; j < fieldSizeX; j++) {
                 if (isEmptyCell(j, i)) {
-                    field[i][j] = AI_DOT;
-                    if (checkWin(AI_DOT)) {
+                    field[i][j] = FieldStatus.ZERO;
+                    if (checkWin(FieldStatus.ZERO) != null) {
                         return true;
                     }
-                    field[i][j] = EMPTY_DOT;
+                    field[i][j] = null;
                 }
             }
         }
@@ -240,60 +235,53 @@ public class GameMap extends JPanel {
         for (int i = 0; i < fieldSizeY; i++) {
             for (int j = 0; j < fieldSizeX; j++) {
                 if (isEmptyCell(j, i)) {
-                    field[i][j] = HUMAN_DOT;
-                    if (checkWin(HUMAN_DOT)) {
-                        field[i][j] = AI_DOT;
+                    field[i][j] = FieldStatus.CROSS;
+                    if (checkWin(FieldStatus.CROSS) != null) {
+                        field[i][j] = FieldStatus.ZERO;
                         return true;
                     }
-                    field[i][j] = EMPTY_DOT;
+                    field[i][j] = null;
                 }
             }
         }
         return false;
     }
 
-    private boolean checkWin(int characterSymbol) {
+    private WinType checkWin(FieldStatus fieldStatus) {
         //todo better use hor/ver instead of x/y
         for (int i = 0; i < fieldSizeX; i++) {
             for (int j = 0; j < fieldSizeY; j++) {
-                if (checkLine(i, j, 1, 0, winLength, characterSymbol)) {
-                    stateWin = HORIZONTAL_WIN;
-                    dotI = i; //todo get rid of copy paste
-                    dotJ = j;
-                    return true;
+                if (checkLine(i, j, 1, 0, winLength, fieldStatus)) {
+                    winLineStart = new Coordinate(i, j);
+                    return WinType.HORIZONTAL;
                 }
-                if (checkLine(i, j, 0, 1, winLength, characterSymbol)) {
-                    stateWin = VERTICAL_WIN;
-                    dotI = i;
-                    dotJ = j;
-                    return true;
+                if (checkLine(i, j, 0, 1, winLength, fieldStatus)) {
+                    winLineStart = new Coordinate(i, j);
+                    return WinType.VERTICAL;
                 }
-                if (checkLine(i, j, 1, 1, winLength, characterSymbol)) {
-                    stateWin = DIAGONAL_WIN;
-                    dotI = i;
-                    dotJ = j;
-                    return true;
+                if (checkLine(i, j, 1, 1, winLength, fieldStatus)) {
+                    winLineStart = new Coordinate(i, j);
+                    return WinType.DIAGONAL;
                 }
-                if (checkLine(i, j, 1, -1, winLength, characterSymbol)) {
-                    stateWin = REVERSE_DIAGONAL_WIN;
-                    dotI = i;
-                    dotJ = j;
-                    return true;
+                if (checkLine(i, j, 1, -1, winLength, fieldStatus)) {
+                    winLineStart = new Coordinate(i, j);
+                    return WinType.REVERSE_DIAGONAL;
                 }
             }
         }
-        return false;
+        return null;
     }
 
+
     //todo better parameters and method name
-    private boolean checkLine(int x, int y, int vx, int vy, int len, int characterSymbol) {
+    private boolean checkLine(int x, int y, int vx, int vy, int len, FieldStatus fieldStatus) {
         final int farX = x + (len - 1) * vx;
         final int farY = y + (len - 1) * vy;
-        if (isValidCell(farX, farY)) {
+        if (isInvalidCell(farX, farY)) {
             return false;
         }
         for (int i = 0; i < len; i++) {
-            if (field[y + i * vy][x + i * vx] != characterSymbol) {
+            if (field[y + i * vy][x + i * vx] != fieldStatus) {
                 return false;
             }
         }
@@ -303,7 +291,7 @@ public class GameMap extends JPanel {
     private boolean isFullMap() {
         for (int i = 0; i < fieldSizeX; i++) {
             for (int j = 0; j < fieldSizeY; j++) {
-                if (field[i][j] == EMPTY_DOT) {
+                if (field[i][j] == null) {
                     return false;
                 }
             }
@@ -311,12 +299,12 @@ public class GameMap extends JPanel {
         return true;
     }
 
-    private boolean isValidCell(int x, int y) {
+    private boolean isInvalidCell(int x, int y) {
         return x < 0 || x >= fieldSizeX || y < 0 || y >= fieldSizeY;
     }
 
     private boolean isEmptyCell(int x, int y) {
-        return field[y][x] == EMPTY_DOT;
+        return field[y][x] == null;
     }
 
     @Override
