@@ -25,7 +25,7 @@ public class SettingsColorFrame extends JDialog {
         setLocation(PosX, PosY);
         setResizable(false);
 
-        String Ok = GameWindow.messages.getProperty("Ok");
+        String Ok = GameWindow.messages.getProperty("ok");
         butOk = new JButton(Ok);
         butOk.addActionListener(e -> setVisible(false));
         add(butOk, BorderLayout.SOUTH);

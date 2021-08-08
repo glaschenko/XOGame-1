@@ -29,17 +29,24 @@ public class GameWindow extends JFrame {
 
         settingsWindow = new SettingsWindow(this);
         gameMap = new GameMap();
-
-        //extract method
         initializeButtonsPanel();
         add(gameMap);
-
         setVisible(true);
     }
 
+    private void initMessages() {
+        try {
+            InputStream in = getClass().getResourceAsStream("resources/messages.properties");
+            Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
+            messages.load(reader);
+        } catch (IOException e) {
+            throw new RuntimeException("Ошибка при загрузке properties: " + e.getMessage(), e);
+        }
+    }
+
     private void initializeButtonsPanel() {
-        String StartNewGame = GameWindow.messages.getProperty("StartNewGame");
-        String Exit = GameWindow.messages.getProperty("Exit");
+        String StartNewGame = GameWindow.messages.getProperty("startNewGame");
+        String Exit = GameWindow.messages.getProperty("exit");
         JButton butStartGame = new JButton(StartNewGame);
         butStartGame.addActionListener(e -> settingsWindow.setVisible(true));
 
@@ -54,17 +61,7 @@ public class GameWindow extends JFrame {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    private void initMessages() {
-        try {
-            InputStream in = getClass().getResourceAsStream("resources/messages.properties");
-            Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
-            messages.load(reader);
-        } catch (IOException e) {
-            throw new RuntimeException("Ошибка при загрузке properties: " + e.getMessage(), e);
-        }
-    }
-
-    void startNewGame(int gameMode, int fieldSizeX, int fieldSizeY, int winLength, Color colorMap) {
+    void startNewGame(GameMode gameMode, int fieldSizeX, int fieldSizeY, int winLength, Color colorMap) {
         gameMap.start(gameMode, fieldSizeX, fieldSizeY, winLength, colorMap);
     }
 }

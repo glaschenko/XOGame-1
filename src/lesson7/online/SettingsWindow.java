@@ -34,8 +34,8 @@ public class SettingsWindow extends JDialog {
         initSettingControls();
         fieldSizeAndWinControl();
         
-        String SelectingFieldColo = GameWindow.messages.getProperty("SelectingFieldColo");
-        String StartGame = GameWindow.messages.getProperty("StartGame");
+        String SelectingFieldColo = GameWindow.messages.getProperty("selectingFieldColo");
+        String StartGame = GameWindow.messages.getProperty("startGame");
         butColor = new JButton(SelectingFieldColo);
         butColor.addActionListener(e -> settingsColor.setVisible(true));
         add(butColor);
@@ -46,9 +46,9 @@ public class SettingsWindow extends JDialog {
     }
 
     private void initSettingControls() {
-        String SelectGameMode = GameWindow.messages.getProperty("SelectGameMode");
-        String TwoPlayers = GameWindow.messages.getProperty("TwoPlayers");
-        String OnePlayers = GameWindow.messages.getProperty("OnePlayers");
+        String SelectGameMode = GameWindow.messages.getProperty("selectGameMode");
+        String TwoPlayers = GameWindow.messages.getProperty("twoPlayers");
+        String OnePlayers = GameWindow.messages.getProperty("onePlayers");
         add(new JLabel(SelectGameMode));
         humanVsHuman = new JRadioButton(TwoPlayers);
         JRadioButton humanVsAi = new JRadioButton(OnePlayers, true);
@@ -77,8 +77,8 @@ public class SettingsWindow extends JDialog {
         });
 
         sliderWinLength.addChangeListener(e -> labelWinLength.setText(winLengthPrefix + " " + sliderWinLength.getValue()));
-        String SelectFieldSize = GameWindow.messages.getProperty("SelectFieldSize");
-        String SelectVictoryConditions = GameWindow.messages.getProperty("SelectVictoryConditions");
+        String SelectFieldSize = GameWindow.messages.getProperty("selectFieldSize");
+        String SelectVictoryConditions = GameWindow.messages.getProperty("selectVictoryConditions");
         add(new JLabel(SelectFieldSize));
         add(labelFieldSize);
         add(sliderFieldSize);
@@ -95,7 +95,7 @@ public class SettingsWindow extends JDialog {
 
     private void handleStartButtonClick() {
 
-        int gameMode = humanVsHuman.isSelected() ? GameMap.GAME_MODE_HVH : GameMap.GAME_MODE_HVA;
+        GameMode gameMode = humanVsHuman.isSelected() ? GameMode.HUMAN_VS_HUMAN : GameMode.HUMAN_VS_AI;
         int fieldSize = sliderFieldSize.getValue();
         int winLength = sliderWinLength.getValue();
 
