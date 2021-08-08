@@ -20,9 +20,9 @@ public class SettingsColorFrame extends JDialog {
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
 
         Rectangle settingsWindowBounds = settingsWindow.getBounds();
-        int PosX = (int) settingsWindowBounds.getX();
-        int PosY = (int) settingsWindowBounds.getY();
-        setLocation(PosX, PosY);
+        int posX = (int) settingsWindowBounds.getX();
+        int posY = (int) settingsWindowBounds.getY();
+        setLocation(posX, posY);
         setResizable(false);
 
         String Ok = GameWindow.messages.getProperty("ok");
