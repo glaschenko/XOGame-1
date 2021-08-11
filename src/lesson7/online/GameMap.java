@@ -11,10 +11,10 @@ import java.util.Random;
 
 public class GameMap extends JPanel {
 
-    public int turnsCount = 0;
-    private WinType currentStateGameOver;
-    public final Random RANDOM = new Random();
+    private int turnsCount = 0;
 
+    private WinType currentStateGameOver;
+    private final Random random = new Random();
 
     private GameMode gameMode;
     private int fieldSizeX;
@@ -23,8 +23,9 @@ public class GameMap extends JPanel {
     private PlayerSymbols [][] field;
     private int cellWidth;
     private int cellHeight;
-    private CoordinatesBeginningVictoryLine coordinatesBeginningVictoryLine;
+    private Coordinates coordinatesBeginningVictoryLine;
     private GameState gameState;
+
 
     GameMap() {
         setBackground(Color.WHITE);
@@ -58,21 +59,6 @@ public class GameMap extends JPanel {
         if (isValidCell(cellX, cellY) || !isEmptyCell(cellX, cellY)) {
             return;
         }
-        //todo refactor ifs and use ternary operator (see original version commented out)
-//        if (gameMode == GAME_MODE_HVH) {
-//            player(cellY, cellX, turnsCount % 2 == 0 ? AI_DOT : HUMAN_DOT);
-//        }
-//        else {
-//            aiTurn();
-//            repaint(); //todo just have one repaint at the end of the method.
-//            if (checkWin(AI_DOT)) {
-//                setGameOver(stateWin);
-//                return; //todo replace with "else" below
-//            }
-//            if (isFullMap()) {
-//                setGameOver(STATE_DRAW);
-//            }
-//        }
 
         if (gameMode == GameMode.HUMAN_VS_HUMAN && turnsCount % 2 != 0) {
             playerTurn(cellY, cellX, PlayerSymbols.ZERO);
@@ -199,8 +185,8 @@ public class GameMap extends JPanel {
         int x;
         int y;
         do { //todo replace with a more efficient algo
-            x = RANDOM.nextInt(fieldSizeX);
-            y = RANDOM.nextInt(fieldSizeY);
+            x = random.nextInt(fieldSizeX);
+            y = random.nextInt(fieldSizeY);
         } while (!isEmptyCell(x, y));
         field[y][x] = PlayerSymbols.ZERO;
     }
@@ -243,19 +229,19 @@ public class GameMap extends JPanel {
         for (int i = 0; i < fieldSizeX; i++) {
             for (int j = 0; j < fieldSizeY; j++) {
                 if (checkLine(i, j, 1, 0, winLength, playerSymbols)) {
-                    coordinatesBeginningVictoryLine = new CoordinatesBeginningVictoryLine(i, j);
+                    coordinatesBeginningVictoryLine = new Coordinates(i, j);
                     return WinType.HORIZONTAL;
                 }
                 if (checkLine(i, j, 0, 1, winLength, playerSymbols)) {
-                    coordinatesBeginningVictoryLine = new CoordinatesBeginningVictoryLine(i, j);
+                    coordinatesBeginningVictoryLine = new Coordinates(i, j);
                     return WinType.VERTICAL;
                 }
                 if (checkLine(i, j, 1, 1, winLength, playerSymbols)) {
-                    coordinatesBeginningVictoryLine = new CoordinatesBeginningVictoryLine(i, j);
+                    coordinatesBeginningVictoryLine = new Coordinates(i, j);
                     return WinType.DIAGONAL;
                 }
                 if (checkLine(i, j, 1, -1, winLength, playerSymbols)) {
-                    coordinatesBeginningVictoryLine = new CoordinatesBeginningVictoryLine(i, j);
+                    coordinatesBeginningVictoryLine = new Coordinates(i, j);
                     return WinType.REVERSE_DIAGONAL;
                 }
             }
