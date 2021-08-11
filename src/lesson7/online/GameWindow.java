@@ -8,8 +8,12 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GameWindow extends JFrame {
+    static Logger logger = Logger.getLogger(GameWindow.class.getName());
+    public static final Properties messages = new Properties();
 
     private static final int WIN_WIDTH = 500;
     private static final int WIN_HEIGHT = 550;
@@ -17,7 +21,6 @@ public class GameWindow extends JFrame {
     private static final int WIN_HJS_Y = 100;
     private final SettingsWindow settingsWindow;
     private final GameMap gameMap;
-    public static final Properties messages = new Properties();
 
     GameWindow() {
         initMessages();
