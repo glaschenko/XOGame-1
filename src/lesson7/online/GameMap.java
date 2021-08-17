@@ -177,7 +177,8 @@ public class GameMap extends JPanel {
                 g.fillRect(120, 170, 250, 100);
                 g.setColor(Color.BLACK);
                 g.setFont(new Font("Times New Roman", Font.ITALIC, 70));
-                g.drawString("Ничья!", 150, getHeight() / 2);
+                String draw = GameWindow.messages.getProperty("draw");
+                g.drawString(draw, 150, getHeight() / 2);
             }
             default -> throw new RuntimeException("Непредвиденная ошибка: " + currentStateGameOver);
         }

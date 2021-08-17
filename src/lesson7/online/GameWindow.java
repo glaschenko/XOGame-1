@@ -61,7 +61,7 @@ public class GameWindow extends JFrame {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    void startNewGame(GameMode gameMode, int fieldSizeX, int fieldSizeY, int winLength, Color colorMap) {
-        gameMap.start(gameMode, fieldSizeX, fieldSizeY, winLength, colorMap);
+    void startNewGame(GameMode gameMode, int fieldSizeY, int fieldSizeX, int winLength, Color colorMap) {
+        gameMap.start(gameMode, fieldSizeY, fieldSizeX, winLength, colorMap);
     }
 }
