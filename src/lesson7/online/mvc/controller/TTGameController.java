@@ -8,7 +8,7 @@ public class TTGameController {
     private final TTGame game;
 
     public TTGameController() {
-        this.game = new TTGame(new TTGameSettings(3, 3, GameMode.HUMAN_VS_AI));
+        this.game = new TTGame(new TTGameSettings(4, 4, GameMode.HUMAN_VS_HUMAN));
     }
 
     public void setGameListener(TTGameListener gameListener) {

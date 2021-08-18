@@ -14,7 +14,7 @@ public class SettingsWindow extends JDialog {
     private static final int MAX_FIELD_SIZE = 6;
     private static final int MIN_WIN_LENGTH = 3;
 
-    private GameMap gameMap;
+    private final GameMap gameMap;
     private final TTGameController controller;
     private final SettingsColorFrame settingsColor;
 
@@ -56,8 +56,9 @@ public class SettingsWindow extends JDialog {
         String TwoPlayers = GameWindow.messages.getProperty("twoPlayers");
         String OnePlayers = GameWindow.messages.getProperty("onePlayers");
         add(new JLabel(SelectGameMode));
-        humanVsHuman = new JRadioButton(TwoPlayers);
-        JRadioButton humanVsAi = new JRadioButton(OnePlayers, true);
+        GameMode currentMode = controller.getGame().getSettings().getGameMode();
+        humanVsHuman = new JRadioButton(TwoPlayers, currentMode == GameMode.HUMAN_VS_HUMAN);
+        JRadioButton humanVsAi = new JRadioButton(OnePlayers, currentMode == GameMode.HUMAN_VS_AI);
 
         ButtonGroup gameMode = new ButtonGroup();
         gameMode.add(humanVsHuman);
@@ -73,8 +74,11 @@ public class SettingsWindow extends JDialog {
         JLabel labelFieldSize = new JLabel(fieldSizePrefix + " " + MIN_FIELD_SIZE);
         JLabel labelWinLength = new JLabel(winLengthPrefix + " " + MIN_WIN_LENGTH);
 
-        sliderFieldSize = new JSlider(MIN_FIELD_SIZE, MAX_FIELD_SIZE, MIN_FIELD_SIZE);
-        sliderWinLength = new JSlider(MIN_WIN_LENGTH, MIN_FIELD_SIZE, MIN_FIELD_SIZE);
+        TTGameSettings settings = controller.getGame().getSettings();
+        sliderFieldSize = new JSlider(MIN_FIELD_SIZE, MAX_FIELD_SIZE, settings.getFieldSize());
+        sliderWinLength = new JSlider(MIN_WIN_LENGTH, settings.getFieldSize(), settings.getWinLength());
+        labelFieldSize.setText(fieldSizePrefix + " " + sliderFieldSize.getValue());
+        labelWinLength.setText(winLengthPrefix + " " + sliderWinLength.getValue());
 
         sliderFieldSize.addChangeListener(e -> {
             int currentValue = sliderFieldSize.getValue();
