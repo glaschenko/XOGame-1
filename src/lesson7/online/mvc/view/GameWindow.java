@@ -1,4 +1,6 @@
-package lesson7.online;
+package lesson7.online.mvc.view;
+
+import lesson7.online.mvc.controller.TTGameController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,8 +18,11 @@ public class GameWindow extends JFrame {
     private static final int WIN_POS_X = 450;
     private static final int WIN_HJS_Y = 100;
     private final SettingsWindow settingsWindow;
-    private final GameMap gameMap;
     public static final Properties messages = new Properties();
+
+    public static void main(String[] args) {
+        new GameWindow();
+    }
 
     GameWindow() {
         initMessages();
@@ -27,8 +32,9 @@ public class GameWindow extends JFrame {
         setTitle("The Game");
         setResizable(false);
 
-        settingsWindow = new SettingsWindow(this);
-        gameMap = new GameMap();
+        TTGameController controller = new TTGameController();
+        GameMap gameMap = new GameMap(controller);
+        settingsWindow = new SettingsWindow(this, gameMap, controller);
         initializeButtonsPanel();
         add(gameMap);
         setVisible(true);
@@ -59,9 +65,5 @@ public class GameWindow extends JFrame {
         buttonPanel.add(butStartGame);
         buttonPanel.add(butExitGame);
         add(buttonPanel, BorderLayout.SOUTH);
-    }
-
-    void startNewGame(GameMode gameMode, int fieldSizeY, int fieldSizeX, int winLength, Color colorMap) {
-        gameMap.start(gameMode, fieldSizeY, fieldSizeX, winLength, colorMap);
     }
 }

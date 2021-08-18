@@ -1,4 +1,7 @@
-package lesson7.online;
+package lesson7.online.mvc.view;
+
+import lesson7.online.mvc.view.GameWindow;
+import lesson7.online.mvc.view.SettingsWindow;
 
 import javax.swing.*;
 import java.awt.*;
