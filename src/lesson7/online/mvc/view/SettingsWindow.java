@@ -104,7 +104,7 @@ public class SettingsWindow extends JDialog {
         int winLength = sliderWinLength.getValue();
         TTGameSettings settings = new TTGameSettings(fieldSize, winLength, gameMode);
         gameMap.setBackground(mapColor);
-        controller.handleStart(settings, mapColor);
+        controller.handleStart(settings);
         setVisible(false);
     }
 }

@@ -15,7 +15,7 @@ public class TTGameController {
         game.setListener(gameListener);
     }
 
-    public void handleStart(TTGameSettings settings, Color fieldColor){
+    public void handleStart(TTGameSettings settings){
         game.start(settings);
     }
 
