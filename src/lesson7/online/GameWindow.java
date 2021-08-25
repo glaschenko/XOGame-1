@@ -1,5 +1,8 @@
 package lesson7.online;
 
+import lesson7.online.MCV.controller.TTGameController;
+import lesson7.online.MCV.model.GameMode;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
@@ -26,9 +29,9 @@ public class GameWindow extends JFrame {
         setLocation(WIN_POS_X, WIN_HJS_Y);
         setTitle("The Game");
         setResizable(false);
-
-        settingsWindow = new SettingsWindow(this);
-        gameMap = new GameMap();
+        TTGameController controller = new TTGameController();
+        gameMap = new GameMap(controller);
+        settingsWindow = new SettingsWindow(this, gameMap, controller);
         initializeButtonsPanel();
         add(gameMap);
         setVisible(true);
@@ -61,7 +64,5 @@ public class GameWindow extends JFrame {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    void startNewGame(GameMode gameMode, int fieldSizeY, int fieldSizeX, int winLength, Color colorMap) {
-        gameMap.start(gameMode, fieldSizeY, fieldSizeX, winLength, colorMap);
-    }
+
 }

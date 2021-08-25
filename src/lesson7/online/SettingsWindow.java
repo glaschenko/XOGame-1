@@ -1,5 +1,8 @@
 package lesson7.online;
 
+import lesson7.online.MCV.controller.TTGameController;
+import lesson7.online.MCV.model.GameMode;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -10,7 +13,8 @@ public class SettingsWindow extends JDialog {
     private static final int MAX_FIELD_SIZE = 6;
     private static final int MIN_WIN_LENGTH = 3;
 
-    private final GameWindow gameWindow;
+    private final GameMap gameMap;
+    private final TTGameController controller;
     private final SettingsColorFrame settingsColor;
 
     private JRadioButton humanVsHuman;
@@ -19,11 +23,12 @@ public class SettingsWindow extends JDialog {
     private final JButton butColor;
     private Color colorMap;
 
-    SettingsWindow(GameWindow gameWindow) {
-        super(gameWindow, "Enter Your Settings New Game", true);
-        this.gameWindow = gameWindow;
+    SettingsWindow(Frame parent, GameMap gameMap, TTGameController controller) {
+        super(parent, "Enter Your Settings New Game", true);
+        this.gameMap = gameMap;
+        this.controller = controller;
         setSize(WIN_WIDTH, WIN_HEIGHT);
-        Rectangle gameWindowBounds = gameWindow.getBounds();
+        Rectangle gameWindowBounds = parent.getBounds();
         int posX = (int) gameWindowBounds.getCenterX() - WIN_WIDTH / 2;
         int posY = (int) gameWindowBounds.getCenterY() - WIN_HEIGHT / 2;
         setLocation(posX, posY);
@@ -44,6 +49,8 @@ public class SettingsWindow extends JDialog {
         butStart.addActionListener(e -> handleStartButtonClick());
         add(butStart);
     }
+
+
 
     private void initSettingControls() {
         String SelectGameMode = GameWindow.messages.getProperty("selectGameMode");
@@ -99,7 +106,7 @@ public class SettingsWindow extends JDialog {
         int fieldSize = sliderFieldSize.getValue();
         int winLength = sliderWinLength.getValue();
 
-        gameWindow.startNewGame(gameMode, fieldSize, fieldSize, winLength, colorMap);
+
         setVisible(false);
     }
 

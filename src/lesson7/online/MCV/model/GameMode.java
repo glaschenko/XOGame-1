@@ -1,4 +1,4 @@
-package lesson7.online;
+package lesson7.online.MCV.model;
 
 public enum GameMode {
     HUMAN_VS_HUMAN,
