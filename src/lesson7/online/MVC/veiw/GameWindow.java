@@ -1,4 +1,6 @@
-package lesson7.online;
+package lesson7.online.MVC.veiw;
+
+import lesson7.online.MVC.controller.Controller;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +21,10 @@ public class GameWindow extends JFrame {
     private final GameMap gameMap;
     public static final Properties messages = new Properties();
 
+    public static void main(String[] args) {
+        new GameWindow();
+    }
+
     GameWindow() {
         initMessages();
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -27,8 +33,9 @@ public class GameWindow extends JFrame {
         setTitle("The Game");
         setResizable(false);
 
-        settingsWindow = new SettingsWindow(this);
-        gameMap = new GameMap();
+        Controller controller = new Controller();
+        gameMap = new GameMap(controller);
+        settingsWindow = new SettingsWindow(this, gameMap, controller);
         initializeButtonsPanel();
         add(gameMap);
         setVisible(true);
@@ -61,7 +68,4 @@ public class GameWindow extends JFrame {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    void startNewGame(GameMode gameMode, int fieldSizeY, int fieldSizeX, int winLength, Color colorMap) {
-        gameMap.start(gameMode, fieldSizeY, fieldSizeX, winLength, colorMap);
-    }
 }

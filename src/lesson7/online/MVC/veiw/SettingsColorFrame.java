@@ -1,4 +1,4 @@
-package lesson7.online;
+package lesson7.online.MVC.veiw;
 
 import javax.swing.*;
 import java.awt.*;

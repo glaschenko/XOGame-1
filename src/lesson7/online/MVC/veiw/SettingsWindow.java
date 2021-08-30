@@ -1,4 +1,8 @@
-package lesson7.online;
+package lesson7.online.MVC.veiw;
+
+import lesson7.online.MVC.controller.Controller;
+import lesson7.online.MVC.model.GameMode;
+import lesson7.online.MVC.model.TTSettingsWindow;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,20 +14,22 @@ public class SettingsWindow extends JDialog {
     private static final int MAX_FIELD_SIZE = 6;
     private static final int MIN_WIN_LENGTH = 3;
 
-    private final GameWindow gameWindow;
+    private final GameMap gameMap;
+    private final Controller controller;
     private final SettingsColorFrame settingsColor;
 
     private JRadioButton humanVsHuman;
     private JSlider sliderWinLength;
     private JSlider sliderFieldSize;
     private final JButton butColor;
-    private Color colorMap;
+    private Color mapColor;
 
-    SettingsWindow(GameWindow gameWindow) {
-        super(gameWindow, "Enter Your Settings New Game", true);
-        this.gameWindow = gameWindow;
+    SettingsWindow(Frame parent, GameMap gameMap, Controller controller) {
+        super(parent, "Enter Your Settings New Game", true);
+        this.gameMap = gameMap;
+        this.controller = controller;
         setSize(WIN_WIDTH, WIN_HEIGHT);
-        Rectangle gameWindowBounds = gameWindow.getBounds();
+        Rectangle gameWindowBounds = parent.getBounds();
         int posX = (int) gameWindowBounds.getCenterX() - WIN_WIDTH / 2;
         int posY = (int) gameWindowBounds.getCenterY() - WIN_HEIGHT / 2;
         setLocation(posX, posY);
@@ -34,9 +40,9 @@ public class SettingsWindow extends JDialog {
         initSettingControls();
         fieldSizeAndWinControl();
         
-        String SelectingFieldColo = GameWindow.messages.getProperty("selectingFieldColo");
+        String SelectingFieldColor = GameWindow.messages.getProperty("selectingFieldColor");
         String StartGame = GameWindow.messages.getProperty("startGame");
-        butColor = new JButton(SelectingFieldColo);
+        butColor = new JButton(SelectingFieldColor);
         butColor.addActionListener(e -> settingsColor.setVisible(true));
         add(butColor);
 
@@ -90,7 +96,7 @@ public class SettingsWindow extends JDialog {
 
     void setSelectedColor(Color colorId) {
         butColor.setBackground(colorId);
-        colorMap = colorId;
+        mapColor = colorId;
     }
 
     private void handleStartButtonClick() {
@@ -98,9 +104,12 @@ public class SettingsWindow extends JDialog {
         GameMode gameMode = humanVsHuman.isSelected() ? GameMode.HUMAN_VS_HUMAN : GameMode.HUMAN_VS_AI;
         int fieldSize = sliderFieldSize.getValue();
         int winLength = sliderWinLength.getValue();
+        TTSettingsWindow settings =new TTSettingsWindow(fieldSize, winLength, gameMode);
+        gameMap.setBackground(mapColor);
+        controller.handleStart(settings);
+        setVisible(true);
 
-        gameWindow.startNewGame(gameMode, fieldSize, fieldSize, winLength, colorMap);
-        setVisible(false);
+
     }
 
 }
