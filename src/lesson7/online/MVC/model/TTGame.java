@@ -10,37 +10,36 @@ public class TTGame {
     private PlayerSymbols[][] field;
     private WinType currentStateGameOver;
     private Coordinates coordinatesBeginningVictoryLine;
-    private GameState gameState;
+    private GameState gameState = GameState.NOT_STARTED;
     private PlayerSymbols currentTurn; //todo инициализацию убрал в метод start после ничьи игрок начинает с нолика
     private TTSettingsWindow settings;
-    private GameMap gameMap;
 
     public void start(TTSettingsWindow settings) {
         this.settings = settings;
-
         field = new PlayerSymbols [settings.getFieldSizeY()][settings.getFieldSizeX()];
         gameState = GameState.STARTED;
         currentTurn  = PlayerSymbols.CROSS; //todo инициализация currentTurn
-        gameMap.accord();
+        settings.getGameMap().accord();
     }
+
     public void makeTurn(int x, int y){
-    if (gameState != GameState.STARTED) return;
+    if (getGameState() != GameState.STARTED) return;
     if (isValidCell(x, y) || !isEmptyCell(x, y)) {
         return;
     }
 
     makePlayerTurn(x, y, currentTurn);
     handlerTurn();
-        if (settings.getGameMode() == GameMode.HUMAN_VS_AI && gameState != GameState.FINISHED){
+        if (settings.getGameMode() == GameMode.HUMAN_VS_AI && getGameState() != GameState.FINISHED){
         //todo убрал "currentTurn == PlayerSymbols.ZERO" добавил "gameState != GameState.FINISHED" не отрисовывает последний ход и зависает
         makeAITurn();
         handlerTurn();
     }
-        gameMap.accord();
+        settings.getGameMap().accord();
 }
 
-    private void makePlayerTurn(int cellX, int cellY, PlayerSymbols playerSymbols) {
-        field[cellY][cellX] = playerSymbols;
+    private void makePlayerTurn(int cellX, int cellY, PlayerSymbols currentTurn) {
+        field[cellY][cellX] = currentTurn;
     }
 
     private void handlerTurn() {
@@ -51,6 +50,7 @@ public class TTGame {
         }
         if (isFullMap()) {
             setGameOver(WinType.DRAW);
+            return;
         }
         currentTurn = currentTurn == PlayerSymbols.ZERO ? PlayerSymbols.CROSS : PlayerSymbols.ZERO;
     }
@@ -58,8 +58,8 @@ public class TTGame {
     private void setGameOver(WinType gameOverState) {
         currentStateGameOver = gameOverState;
         gameState = GameState.FINISHED;
-        gameMap.accord();
     }
+
     private void makeAITurn() {
         Coordinates winCoordinates = turnAIWinCell(PlayerSymbols.ZERO);
         if (winCoordinates == null) {
@@ -161,12 +161,15 @@ public class TTGame {
         return settings;
     }
     public PlayerSymbols  getCellContent(int x, int y){
-        return field[x][y];
+        return field[y][x];
     }
     public Coordinates getCoordinatesBeginningVictoryLine(){
         return coordinatesBeginningVictoryLine;
     }
     public WinType getCurrentStateGameOver(){
         return currentStateGameOver;
+    }
+    public GameState getGameState(){
+        return  gameState;
     }
 }

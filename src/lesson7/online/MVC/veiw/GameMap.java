@@ -22,16 +22,10 @@ public class GameMap extends JPanel {
     private static final Image VERTICAL_IMAGE;
     private static final Image DIAGONAL_IMAGE;
     private static final Image REVERSE_DIAGONAL_IMAGE;
-    private final GameState gameState;
-
     private final TTGame game;
-
-
     private int cellWidth;
     private int cellHeight;
-
-
-
+    private final Controller controller;
 
     static {
         try {
@@ -46,9 +40,6 @@ public class GameMap extends JPanel {
         }
     }
 
-    private final Controller controller;
-
-
     GameMap(Controller controller) {
         this.controller = controller;
         game = controller.getGame();
@@ -60,24 +51,20 @@ public class GameMap extends JPanel {
                 update(e);
             }
         });
-        gameState = GameState.NOT_STARTED;
-    }
-
-
-
-    private void update(MouseEvent e) {
-
-        int cellX = e.getX() / cellWidth;
-        int cellY = e.getY() / cellHeight;
-        controller.handleClick(cellX, cellY);
     }
 
     public void accord(){
         repaint();
     }
 
-    private void render(Graphics g) throws IOException {
-        if (gameState == GameState.NOT_STARTED) return;
+    private void update(MouseEvent e) {
+        int cellX = e.getX() / cellWidth;
+        int cellY = e.getY() / cellHeight;
+        controller.handleClick(cellX, cellY);
+    }
+
+    private void render(Graphics g) {
+        if (game.getGameState() == GameState.NOT_STARTED) {return;}
         int width = getWidth();
         int height = getHeight();
         cellWidth = width / game.getSettings().getFieldSizeX();
@@ -85,7 +72,7 @@ public class GameMap extends JPanel {
 
         dragGrid(g, width, height);
         dragPlayerSymbols(g);
-        if (gameState == GameState.FINISHED) {
+        if (game.getGameState() == GameState.FINISHED) {
             showGameOverState(g);
         }
     }
@@ -152,15 +139,9 @@ public class GameMap extends JPanel {
         }
     }
 
-
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        try {
             render(g);
-        } catch (IOException e) { //todo why are you catching this one?
-            e.printStackTrace();
-        }
     }
 }

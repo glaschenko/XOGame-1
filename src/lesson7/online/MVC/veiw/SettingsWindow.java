@@ -91,7 +91,6 @@ public class SettingsWindow extends JDialog {
         add(new JLabel(SelectVictoryConditions));
         add(labelWinLength);
         add(sliderWinLength);
-
     }
 
     void setSelectedColor(Color colorId) {
@@ -100,16 +99,12 @@ public class SettingsWindow extends JDialog {
     }
 
     private void handleStartButtonClick() {
-
         GameMode gameMode = humanVsHuman.isSelected() ? GameMode.HUMAN_VS_HUMAN : GameMode.HUMAN_VS_AI;
         int fieldSize = sliderFieldSize.getValue();
         int winLength = sliderWinLength.getValue();
-        TTSettingsWindow settings =new TTSettingsWindow(fieldSize, winLength, gameMode);
+        TTSettingsWindow settings =new TTSettingsWindow(fieldSize, winLength, gameMode, gameMap);
         gameMap.setBackground(mapColor);
         controller.handleStart(settings);
-        setVisible(true);
-
-
+        setVisible(false);
     }
-
 }

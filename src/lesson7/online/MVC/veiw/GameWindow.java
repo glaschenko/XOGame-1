@@ -67,5 +67,4 @@ public class GameWindow extends JFrame {
         buttonPanel.add(butExitGame);
         add(buttonPanel, BorderLayout.SOUTH);
     }
-
 }

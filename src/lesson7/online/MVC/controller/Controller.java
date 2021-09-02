@@ -10,7 +10,6 @@ public class Controller {
         this.game = new TTGame();
     }
 
-
     public void handleStart(TTSettingsWindow settings){
         game.start(settings);
     }
