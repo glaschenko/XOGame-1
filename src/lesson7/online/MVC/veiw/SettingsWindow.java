@@ -17,11 +17,11 @@ public class SettingsWindow extends JDialog {
     private final GameMap gameMap;
     private final Controller controller;
     private final SettingsColorFrame settingsColor;
+    private final JButton butColor;
 
     private JRadioButton humanVsHuman;
     private JSlider sliderWinLength;
     private JSlider sliderFieldSize;
-    private final JButton butColor;
     private Color mapColor;
 
     SettingsWindow(Frame parent, GameMap gameMap, Controller controller) {

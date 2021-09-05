@@ -4,6 +4,8 @@ import lesson7.online.MVC.model.TTGame;
 import lesson7.online.MVC.model.TTGameListener;
 import lesson7.online.MVC.model.TTSettingsWindow;
 
+import java.util.logging.Level;
+
 public class Controller {
     private final TTGame game;
 
@@ -24,7 +26,7 @@ public class Controller {
     }
 
     public void handleClick(int cellX, int cellY) {
-        System.out.println("X: " + cellX + ", Y:" + cellY); //todo use logger
+        TTGame.logger.log(Level.INFO, "X: " + cellX + ", Y:" + cellY);
         game.makeTurn(cellX, cellY);
     }
 }

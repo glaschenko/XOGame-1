@@ -1,15 +1,17 @@
 package lesson7.online.MVC.model;
 
 import java.util.Random;
+import java.util.logging.Logger;
 
 public class TTGame {
 
     public static final Random random = new Random();
+    public static Logger logger = Logger.getLogger(TTGame.class.getName());
     private PlayerSymbols[][] field;
     private WinType currentStateGameOver;
     private Coordinates coordinatesBeginningVictoryLine;
     private GameState gameState = GameState.NOT_STARTED;
-    private PlayerSymbols currentTurn; //todo инициализацию убрал в метод start после ничьи игрок начинает с нолика
+    private PlayerSymbols currentTurn;
     private TTSettingsWindow settings;
     private TTGameListener listener;
 
@@ -17,7 +19,7 @@ public class TTGame {
         this.settings = settings;
         field = new PlayerSymbols [settings.getFieldSizeX()][settings.getFieldSizeY()];
         gameState = GameState.STARTED;
-        currentTurn  = PlayerSymbols.CROSS; //todo инициализация currentTurn
+        currentTurn  = PlayerSymbols.CROSS;
         listener.onGameStarted();
     }
 
@@ -30,7 +32,6 @@ public class TTGame {
     makePlayerTurn(x, y, currentTurn);
     handlerTurn();
         if (settings.getGameMode() == GameMode.HUMAN_VS_AI && getGameState() != GameState.FINISHED){
-        //todo убрал "currentTurn == PlayerSymbols.ZERO" добавил "gameState != GameState.FINISHED" не отрисовывает последний ход и зависает
         makeAITurn();
         handlerTurn();
     }
@@ -87,7 +88,7 @@ public class TTGame {
                     field[i][j] = playerSymbols;
                     WinType winType = checkWin(playerSymbols);
                     if (winType != null) {
-                        return new Coordinates(i, j); // почему new нужно?
+                        return new Coordinates(i, j);
                     }
                     field[i][j] = null;
                 }
@@ -117,7 +118,6 @@ public class TTGame {
                     return WinType.REVERSE_DIAGONAL;
                 }
                 coordinatesBeginningVictoryLine = new Coordinates(i, j);
-                //todo при игре с оппанентом при ничье падает с ошибкой
             }
         }
         return null;
@@ -137,7 +137,6 @@ public class TTGame {
         }
         return true;
     }
-    //todo can be simply replaced with turns count.
     private boolean isFullMap() {
         for (int i = 0; i < settings.getFieldSizeX(); i++) {
             for (int j = 0; j < settings.getFieldSizeY(); j++) {
@@ -174,5 +173,4 @@ public class TTGame {
     public void setSettings(TTGameListener listener) {
         this.listener = listener;
     }
-
 }

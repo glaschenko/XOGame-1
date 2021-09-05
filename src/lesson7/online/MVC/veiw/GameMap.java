@@ -20,9 +20,9 @@ public class GameMap extends JPanel implements TTGameListener {
     private static final Image DIAGONAL_IMAGE;
     private static final Image REVERSE_DIAGONAL_IMAGE;
     private final TTGame game;
+    private final Controller controller;
     private int cellWidth;
     private int cellHeight;
-    private final Controller controller;
 
     static {
         try {
@@ -60,7 +60,6 @@ public class GameMap extends JPanel implements TTGameListener {
     public void onTurn() {
         repaint();
     }
-
 
     private void update(MouseEvent e) {
         int cellX = e.getX() / cellWidth;
@@ -149,5 +148,4 @@ public class GameMap extends JPanel implements TTGameListener {
         super.paintComponent(g);
             render(g);
     }
-
 }

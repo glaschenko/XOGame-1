@@ -7,12 +7,12 @@ public class SettingsColorFrame extends JDialog {
 
     private static final int FRAME_WIDTH = 350;
     private static final int FRAME_HEIGHT = 300;
-    private final JButton butOk;
-    private final SettingsWindow settingsWindow;
     private static final Color colorOptionW = new Color(255, 255, 255);
     private static final Color colorOptionB = new Color(81, 81, 255);
     private static final Color colorOptionG = new Color(0, 145, 72);
     private static final Color colorOptionR = new Color(255, 62, 62);
+    private final JButton butOk;
+    private final SettingsWindow settingsWindow;
 
     SettingsColorFrame(SettingsWindow settingsWindow) {
         super(settingsWindow,"Field Color", true);
