@@ -18,7 +18,6 @@ public class GameWindow extends JFrame {
     private static final int WIN_POS_X = 450;
     private static final int WIN_HJS_Y = 100;
     private final SettingsWindow settingsWindow;
-    private final GameMap gameMap;
     public static final Properties messages = new Properties();
 
     public static void main(String[] args) {
@@ -34,7 +33,7 @@ public class GameWindow extends JFrame {
         setResizable(false);
 
         Controller controller = new Controller();
-        gameMap = new GameMap(controller);
+        GameMap gameMap = new GameMap(controller);
         settingsWindow = new SettingsWindow(this, gameMap, controller);
         initializeButtonsPanel();
         add(gameMap);

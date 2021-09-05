@@ -1,6 +1,7 @@
 package lesson7.online.MVC.controller;
 
 import lesson7.online.MVC.model.TTGame;
+import lesson7.online.MVC.model.TTGameListener;
 import lesson7.online.MVC.model.TTSettingsWindow;
 
 public class Controller {
@@ -16,6 +17,10 @@ public class Controller {
 
     public TTGame getGame() {
         return game;
+    }
+
+    public void setGameListener(TTGameListener gameListener){
+        game.setSettings(gameListener);
     }
 
     public void handleClick(int cellX, int cellY) {

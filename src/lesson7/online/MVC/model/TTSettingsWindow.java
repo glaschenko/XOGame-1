@@ -1,20 +1,16 @@
 package lesson7.online.MVC.model;
 
-import lesson7.online.MVC.veiw.GameMap;
-
 public class TTSettingsWindow {
-    private int fieldSizeX;
-    private int fieldSizeY;
-    private int winLength;
-    private GameMode gameMode;
-    private GameMap gameMap;
+    private final int fieldSizeX;
+    private final int fieldSizeY;
+    private final int winLength;
+    private final GameMode gameMode;
 
-    public TTSettingsWindow(int fieldSize, int winLength, GameMode gameMode, GameMap gameMap) {
+    public TTSettingsWindow(int fieldSize, int winLength, GameMode gameMode) {
         this.gameMode = gameMode;
         this.winLength = winLength;
         this.fieldSizeX = fieldSize;
         this.fieldSizeY = fieldSize;
-        this.gameMap = gameMap;
     }
 
     public int getFieldSizeX() {
@@ -28,8 +24,5 @@ public class TTSettingsWindow {
     }
     public GameMode getGameMode() {
         return gameMode;
-    }
-    public GameMap getGameMap() {
-        return gameMap;
     }
 }

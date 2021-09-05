@@ -102,7 +102,7 @@ public class SettingsWindow extends JDialog {
         GameMode gameMode = humanVsHuman.isSelected() ? GameMode.HUMAN_VS_HUMAN : GameMode.HUMAN_VS_AI;
         int fieldSize = sliderFieldSize.getValue();
         int winLength = sliderWinLength.getValue();
-        TTSettingsWindow settings =new TTSettingsWindow(fieldSize, winLength, gameMode, gameMap);
+        TTSettingsWindow settings =new TTSettingsWindow(fieldSize, winLength, gameMode);
         gameMap.setBackground(mapColor);
         controller.handleStart(settings);
         setVisible(false);

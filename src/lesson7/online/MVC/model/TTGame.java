@@ -1,7 +1,5 @@
 package lesson7.online.MVC.model;
 
-import lesson7.online.MVC.veiw.GameMap;
-
 import java.util.Random;
 
 public class TTGame {
@@ -13,13 +11,14 @@ public class TTGame {
     private GameState gameState = GameState.NOT_STARTED;
     private PlayerSymbols currentTurn; //todo инициализацию убрал в метод start после ничьи игрок начинает с нолика
     private TTSettingsWindow settings;
+    private TTGameListener listener;
 
     public void start(TTSettingsWindow settings) {
         this.settings = settings;
-        field = new PlayerSymbols [settings.getFieldSizeY()][settings.getFieldSizeX()];
+        field = new PlayerSymbols [settings.getFieldSizeX()][settings.getFieldSizeY()];
         gameState = GameState.STARTED;
         currentTurn  = PlayerSymbols.CROSS; //todo инициализация currentTurn
-        settings.getGameMap().accord();
+        listener.onGameStarted();
     }
 
     public void makeTurn(int x, int y){
@@ -35,11 +34,11 @@ public class TTGame {
         makeAITurn();
         handlerTurn();
     }
-        settings.getGameMap().accord();
+        listener.onTurn();
 }
 
     private void makePlayerTurn(int cellX, int cellY, PlayerSymbols currentTurn) {
-        field[cellY][cellX] = currentTurn;
+        field[cellX][cellY] = currentTurn;
     }
 
     private void handlerTurn() {
@@ -82,9 +81,9 @@ public class TTGame {
     }
 
     private Coordinates turnAIWinCell(PlayerSymbols playerSymbols) {
-        for (int i = 0; i < settings.getFieldSizeY(); i++) {
-            for (int j = 0; j < settings.getFieldSizeX(); j++) {
-                if (isEmptyCell(j, i)) {
+        for (int i = 0; i < settings.getFieldSizeX(); i++) {
+            for (int j = 0; j < settings.getFieldSizeY(); j++) {
+                if (isEmptyCell(i, j)) {
                     field[i][j] = playerSymbols;
                     WinType winType = checkWin(playerSymbols);
                     if (winType != null) {
@@ -132,7 +131,7 @@ public class TTGame {
             return false;
         }
         for (int i = 0; i < len; i++) {
-            if (field[y + i * vy][x + i * vx] != characterSymbol) {
+            if (field[x + i * vx][y + i * vy] != characterSymbol) {
                 return false;
             }
         }
@@ -155,13 +154,13 @@ public class TTGame {
     }
 
     public boolean isEmptyCell(int x, int y) {
-        return field[y][x] == null;
+        return field[x][y] == null;
     }
     public TTSettingsWindow getSettings() {
         return settings;
     }
     public PlayerSymbols  getCellContent(int x, int y){
-        return field[y][x];
+        return field[x][y];
     }
     public Coordinates getCoordinatesBeginningVictoryLine(){
         return coordinatesBeginningVictoryLine;
@@ -172,4 +171,8 @@ public class TTGame {
     public GameState getGameState(){
         return  gameState;
     }
+    public void setSettings(TTGameListener listener) {
+        this.listener = listener;
+    }
+
 }

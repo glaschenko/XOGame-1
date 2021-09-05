@@ -1,10 +1,7 @@
 package lesson7.online.MVC.veiw;
 
 import lesson7.online.MVC.controller.Controller;
-import lesson7.online.MVC.model.Coordinates;
-import lesson7.online.MVC.model.GameState;
-import lesson7.online.MVC.model.PlayerSymbols;
-import lesson7.online.MVC.model.TTGame;
+import lesson7.online.MVC.model.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -14,7 +11,7 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.Objects;
 
-public class GameMap extends JPanel {
+public class GameMap extends JPanel implements TTGameListener {
 
     private static final Image CROSS_IMAGE;
     private static final Image ZERO_IMAGE;
@@ -43,6 +40,7 @@ public class GameMap extends JPanel {
     GameMap(Controller controller) {
         this.controller = controller;
         game = controller.getGame();
+        controller.setGameListener(this);
         setBackground(Color.WHITE);
         addMouseListener(new MouseAdapter() {
             @Override
@@ -53,9 +51,16 @@ public class GameMap extends JPanel {
         });
     }
 
-    public void accord(){
+    @Override
+    public void onGameStarted() {
         repaint();
     }
+
+    @Override
+    public void onTurn() {
+        repaint();
+    }
+
 
     private void update(MouseEvent e) {
         int cellX = e.getX() / cellWidth;
@@ -144,4 +149,5 @@ public class GameMap extends JPanel {
         super.paintComponent(g);
             render(g);
     }
+
 }
